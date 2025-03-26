@@ -25,7 +25,7 @@ OPTION(ENABLE_EXAMPLES "Enable building hiredis examples" OFF)
 OPTION(ENABLE_ASYNC_TESTS "Should we run all asynchronous API tests" OFF)
 # Historically, the NuGet file was always install; default
 # to ON for those who rely on that historical behaviour.
-OPTION(ENABLE_NUGET "Install NuGET packaging details" ON)
+OPTION(ENABLE_NUGET "Install NuGET packaging details" OFF)
 
 # Hiredis requires C99
 SET(CMAKE_C_STANDARD 99)
@@ -94,7 +94,7 @@ set(CPACK_PACKAGE_CONTACT "michael dot grunder at gmail dot com")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 set(CPACK_RPM_PACKAGE_AUTOREQPROV ON)
 
-include(CPack)
+# include(CPack)
 
 # INSTALL(TARGETS hiredis
 #     EXPORT hiredis-targets
@@ -102,17 +102,17 @@ include(CPack)
 #     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 #     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-if (MSVC AND BUILD_SHARED_LIBS)
-    INSTALL(FILES $<TARGET_PDB_FILE:hiredis>
-        DESTINATION ${CMAKE_INSTALL_BINDIR}
-        CONFIGURATIONS Debug RelWithDebInfo)
-endif()
+# if (MSVC AND BUILD_SHARED_LIBS)
+#     INSTALL(FILES $<TARGET_PDB_FILE:hiredis>
+#         DESTINATION ${CMAKE_INSTALL_BINDIR}
+#         CONFIGURATIONS Debug RelWithDebInfo)
+# endif()
 
-if (ENABLE_NUGET)
-    # For NuGet packages
-    INSTALL(FILES hiredis.targets
-        DESTINATION build/native)
-endif()
+# if (ENABLE_NUGET)
+#     # For NuGet packages
+#     INSTALL(FILES hiredis.targets
+#         DESTINATION build/native)
+# endif()
 
 # INSTALL(FILES hiredis.h read.h sds.h async.h alloc.h sockcompat.h
 #     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hiredis)
@@ -224,6 +224,9 @@ IF(NOT DISABLE_TESTS)
     ENABLE_TESTING()
     ADD_EXECUTABLE(hiredis-test test.c)
     TARGET_LINK_LIBRARIES(hiredis-test hiredis)
+    INSTALL(TARGETS
+        hiredis-test
+        DESTINATION ${CMAKE_INSTALL_PREFIX})
     IF(ENABLE_SSL_TESTS)
         ADD_DEFINITIONS(-DHIREDIS_TEST_SSL=1)
         TARGET_LINK_LIBRARIES(hiredis-test hiredis_ssl)
@@ -237,6 +240,6 @@ IF(NOT DISABLE_TESTS)
 ENDIF()
 
 # Add examples
-IF(ENABLE_EXAMPLES)
-    ADD_SUBDIRECTORY(examples)
-ENDIF(ENABLE_EXAMPLES)
+# IF(ENABLE_EXAMPLES)
+#     ADD_SUBDIRECTORY(examples)
+# ENDIF(ENABLE_EXAMPLES)
